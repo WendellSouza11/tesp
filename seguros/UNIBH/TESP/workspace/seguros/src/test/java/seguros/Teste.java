@@ -39,7 +39,7 @@ public class Teste {
 				Assert.assertNotNull(o);		
 			
 		}
-		//uytfuyt
+		
 		@Test 
 		public void testeComparacaoSegurado(){
 			
