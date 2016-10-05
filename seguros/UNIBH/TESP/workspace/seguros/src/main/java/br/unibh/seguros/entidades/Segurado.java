@@ -9,6 +9,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 
 @Entity 
@@ -17,47 +23,80 @@ import javax.persistence.TemporalType;
 public class Segurado extends Pessoa {
 	
 	@Column(columnDefinition="char(1)", nullable=false)
+	@NotBlank
+	@Pattern(regexp = "[A-Z]*", message = "Classe deve ter apenas caracteres de A à Z maiúsculos.")
 	private String classe;
 	
 	@Column(name="numero_rg",columnDefinition="varchar(10)", nullable=false)
+	@NotBlank
+	@Pattern(regexp="[0-9]*", message = "RG aceita somente Números")
+	@Size(max=10) 
+	//@Range(max =10)
 	private String numeroRG;
 	
 	@Column(name="orgao_expedidor_rg",columnDefinition="varchar(50)", nullable=false)
+	@NotBlank
+	@Pattern(regexp = "[A-Z-/]*", message = "Orgão expedidor aceita apenas caracteres de A à Z maiúsculos ou minúsculos, traços e barras")
+	@Size(max = 30)
 	private String orgaoExpedidorRG;
 	
 	@Column(name="numero_habilitacao",columnDefinition="varchar(20)", nullable=false)
+	@NotBlank
+	@Pattern(regexp="[0-9]*", message = "Habilitacao aceita somente Numeros")
+	@Size(max = 30)
 	private String numeroHabilitacao;
 	
 	@Column(name="tipo_habilitacao",columnDefinition="char(1)", nullable=false)
+	@NotBlank
+	@Pattern(regexp="[ABCDE]*",message="Tipo de Havibilitacao aceita apenas A, ou B, ou C, ou D, ou E")
 	private String tipoHabilitacao;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name="dava_validade_habilitacao", nullable=false)
+	@NotNull
 	private Date dataValidadeHabilitacao;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name="dava_primeira_habilitacao", nullable=false)
+	@NotNull
+	@Past
 	private Date dataPrimeiraHabilitacao;
 	
 	@Column(columnDefinition="varchar(150)", nullable=false)
+	@NotBlank
+	@Pattern(regexp="[A-zÀ-ú -/.']*",message="Logradouro Deverá conter apenas caracteres de A à Z maiúsculos ou minúsculos, com ou sem acentuação, além dos caracteres de espaço, traços (-), barra (/), ponto e aspas simples.")
+	@Size(max=150)
 	private String logradouro;
 	
 	@Column(columnDefinition="varchar(30)", nullable=false)
+	@NotBlank
+	//@Pattern(regexp="[A-Z{0-9}-/. ]*",message="Numero do Logradouro Deverá conter apenas Letras e Espaço")
+	@Pattern(regexp="[0-9]*",message="Numero do Logradouro Deverá conter apenas Letras e Espaço")
+	
+	@Size (max=30)
 	private String numero;
 	
 	@Column(columnDefinition="varchar(100)", nullable=true)
+	@Pattern(regexp="[A-zÀ-ú -/.']*",message="Complemento Deverá conter apenas caracteres de A à Z maiúsculos ou minúsculos, com ou sem acentuação, além dos caracteres de espaço, traços (-), barra (/), ponto, e aspas simples.")
+	@Size (max=100)
 	private String complemento;
 	
 	@Column(columnDefinition="char(10)", nullable=false)
+	@Pattern(regexp="\\d{5}-\\d{3}", message="CEP deve ter o padrao 99999-999")
 	private String cep;
 	
 	@Column(columnDefinition="varchar(50)", nullable=false)
+	@Pattern(regexp="[A-zÀ-ú .']*",message="Bairro Deverá conter apenas caracteres de A à Z maiúsculos ou minúsculos, com ou sem acentuação, além dos caracteres de espaço, ponto e aspas simples.")
+	@Size(max=50)
 	private String bairro;
 	
 	@Column(columnDefinition="varchar(100)", nullable=false)
+	@Pattern(regexp="[A-zÀ-ú .']*",message="Cidade Deverá ter apenas Letras e Espaço")
+	@Size(max=100)
 	private String cidade;
 	
 	@Column(columnDefinition="char(2)", nullable=false)
+	@Pattern(regexp="[A-Z]{2}",message="Estado com duas letras maiusculas")
 	private String estado;
 	
 	@OneToMany(mappedBy="segurado")

@@ -14,6 +14,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.br.CPF;
 
 
 @Entity @Inheritance(strategy=InheritanceType.JOINED) /*@Entity= torna a classe persitente*/
@@ -30,6 +38,8 @@ public abstract class Pessoa {
 	/*This é usado para fazer auto-referência ao próprio contexto em que se encontra. 
 	 * Resumidamente, this sempre será a própria classe ou o objeto já instanciado.	*/
 	    this.id = id;
+	    
+	    
 		this.nome = nome;
 		this.sexo = sexo;
 		this.cpf = cpf;
@@ -47,33 +57,51 @@ public abstract class Pessoa {
 	private Long id;
 	
 	@Column(columnDefinition="varchar(100)", nullable=false)
+	@NotBlank
+	@Size(min = 3, max = 100)
+	@Pattern(regexp="[A-zÀ-ú .']*",message="O nome deverá ter apenas Letras e Espaço")
 	private String nome;
 	
 	@Column(columnDefinition="char(1)", nullable=false)
+	@NotBlank
+	@Pattern(regexp="[MF]{1}", message="Sexo deve ter apenas M ou F")
 	private String sexo;
 	
 	@Column(columnDefinition="char(11)", nullable=false, unique=true) //@Column(unique = true) is a shortcut to UniqueConstraint when it is only a single field.
+	//@Pattern(regexp = "\\d{11}" , message = "CPF Deverá conter onze números.")
+	@NotBlank
+	@CPF
 	private String cpf;
-	
+
 	@Column(name="telefone_comercial",columnDefinition="char(14)", nullable=true)
+	@Pattern(regexp = "\\(\\d{2}\\)\\d{4}-\\d{4}" , message = "Telefone Comercial Deve seguir o padrão (99)099999999")
 	private String telefoneComercial;
 	
 	@Column(name="telefone_residencial",columnDefinition="char(14)", nullable=false)
+	@NotBlank
+	@Pattern(regexp = "\\(\\d{2}\\)\\d{4}-\\d{4}" , message = "Telefone Residencial Deve seguir o padrão (99)09999-9999")
 	private String telefoneResidencial;
 	
 	@Column(name="telefone_celular",columnDefinition="char(14)", nullable=true)
+	@Pattern(regexp = "\\(\\d{2}\\)\\d{5}-\\d{4}" , message = "Telefone Celular Deve seguir o padrão (99)09999-9999")
 	private String telefoneCelular;
 	
-	@Column(columnDefinition="varchar(100)", nullable=true)
+	@Email
+	@Size(max=100)
+	//@Column(name = "email", length=50, columnDefinition="varchar(100)", nullable=true)
 	private String email;
 	
+	@Past
 	@Temporal(TemporalType.DATE)
 	@Column(name="data_nascimento",columnDefinition="char(14)", nullable=false)
+	@NotNull
 	private Date dataNascimento;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="data_cadastro", nullable=true)
+	@NotNull
 	private Date dataCadastro;
+	
 	
 	@Version //Toda vez que um novo registro for inserido no banco de dados, o valor dessa coluna anotada com @Version será incrementado por 1 (um).
 	private long version;

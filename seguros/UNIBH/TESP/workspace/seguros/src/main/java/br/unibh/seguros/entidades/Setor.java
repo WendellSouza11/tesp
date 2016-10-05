@@ -13,6 +13,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 
 
@@ -25,10 +29,17 @@ public class Setor {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	  
 	@Column(columnDefinition="varchar(150)", nullable=false) // nullable=false é a forma como o JPA define o notnull
-	private String nome;
+	@NotBlank  //considera espaços 
+	@Size(min = 3, max = 150)
+	@Pattern(regexp="[A-zÀ-ú .']*",message="Apenas caracteres de A à Z maiúsculos ou minúsculos, com ou sem acentuação, além dos caracteres de espaço, ponto e aspas simples.")
+    private String nome;
 	
-	@Column(columnDefinition="varchar(10)", nullable=false)
+	
+	@NotBlank
+	@Size(min = 2, max = 10)
+	@Pattern(regexp = "[A-Z]*", message = "Deve conter apenas caracteres de A a Z maiúsculos sem espaço")
 	private String sigla;
 	
 	@OneToOne
@@ -44,12 +55,9 @@ public class Setor {
 	public Setor() {
 		super();
 	}
-	public Setor(Long id, String nome, String sigla) {
-		super();
-		this.id = id;
-		this.nome = nome;
-		this.sigla = sigla;
-	}
+
+	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -124,6 +132,17 @@ public class Setor {
 	}
 	public void setVersion(long version) {
 		this.version = version;
+	}
+
+
+
+	public Setor(Long id, String nome, String sigla, Setor setorSuperior, Set<Funcionario> funcionarios) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.sigla = sigla;
+		this.setorSuperior = setorSuperior;
+		this.funcionarios = funcionarios;
 	}
 	
 	

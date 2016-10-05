@@ -6,6 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 @Entity 
 @Table(name = "tb_funcionario")
@@ -15,13 +19,22 @@ public class Funcionario extends Pessoa {
 	private Setor setor;
 	
 	@Column(columnDefinition="varchar(30)", nullable=false)
+	@NotBlank  //considera espaços 
+	@Size(max = 30)
+	@Pattern(regexp = "[A-zÀ-ú ]*", message = "Deve conter apenas letras e espaços")
 	private String perfil;
 	
 	@Column(columnDefinition="varchar(15)", nullable=false)
+	@NotBlank 
+	@Pattern(regexp="[A-z{0-9}]*",message="Não deve ter caracteres especiais e espaços")
+	@Size(min = 8, max = 15)
 	private String login;
 	
 	@Column(columnDefinition="varchar(100)", nullable=false)
+	@NotBlank
+	@Size( max = 100)
 	private String senha;
+	
 	
 	
 	
@@ -101,5 +114,16 @@ public class Funcionario extends Pessoa {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
+	public Funcionario(Long id, String nome, String sexo, String cpf, String telefoneComercial,
+			String telefoneResidencial, String telefoneCelular, String email, Date dataNascimento, Date dataCadastro,
+			Setor setor, String perfil, String login, String senha) {
+		super(id, nome, sexo, cpf, telefoneComercial, telefoneResidencial, telefoneCelular, email, dataNascimento,
+				dataCadastro);
+		this.setor = setor;
+		this.perfil = perfil;
+		this.login = login;
+		this.senha = senha;
+	}
+	
 	
 }
